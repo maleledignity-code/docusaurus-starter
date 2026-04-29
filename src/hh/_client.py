@@ -19,7 +19,11 @@ from ._types import (
     RequestOptions,
     not_given,
 )
-from ._utils import is_given, get_async_library
+from ._utils import (
+    is_given,
+    is_mapping_t,
+    get_async_library,
+)
 from ._compat import cached_property
 from ._version import __version__
 from ._streaming import Stream as Stream, AsyncStream as AsyncStream
@@ -83,6 +87,15 @@ class Hh(SyncAPIClient):
         if base_url is None:
             base_url = f"https://petstore3.swagger.io/api/v3"
 
+        custom_headers_env = os.environ.get("HH_CUSTOM_HEADERS")
+        if custom_headers_env is not None:
+            parsed: dict[str, str] = {}
+            for line in custom_headers_env.split("\n"):
+                colon = line.find(":")
+                if colon >= 0:
+                    parsed[line[:colon].strip()] = line[colon + 1 :].strip()
+            default_headers = {**parsed, **(default_headers if is_mapping_t(default_headers) else {})}
+
         super().__init__(
             version=__version__,
             base_url=base_url,
@@ -96,18 +109,21 @@ class Hh(SyncAPIClient):
 
     @cached_property
     def pets(self) -> PetsResource:
+        """Everything about your Pets"""
         from .resources.pets import PetsResource
 
         return PetsResource(self)
 
     @cached_property
     def store(self) -> StoreResource:
+        """Access to Petstore orders"""
         from .resources.store import StoreResource
 
         return StoreResource(self)
 
     @cached_property
     def users(self) -> UsersResource:
+        """Operations about user"""
         from .resources.users import UsersResource
 
         return UsersResource(self)
@@ -269,6 +285,15 @@ class AsyncHh(AsyncAPIClient):
         if base_url is None:
             base_url = f"https://petstore3.swagger.io/api/v3"
 
+        custom_headers_env = os.environ.get("HH_CUSTOM_HEADERS")
+        if custom_headers_env is not None:
+            parsed: dict[str, str] = {}
+            for line in custom_headers_env.split("\n"):
+                colon = line.find(":")
+                if colon >= 0:
+                    parsed[line[:colon].strip()] = line[colon + 1 :].strip()
+            default_headers = {**parsed, **(default_headers if is_mapping_t(default_headers) else {})}
+
         super().__init__(
             version=__version__,
             base_url=base_url,
@@ -282,18 +307,21 @@ class AsyncHh(AsyncAPIClient):
 
     @cached_property
     def pets(self) -> AsyncPetsResource:
+        """Everything about your Pets"""
         from .resources.pets import AsyncPetsResource
 
         return AsyncPetsResource(self)
 
     @cached_property
     def store(self) -> AsyncStoreResource:
+        """Access to Petstore orders"""
         from .resources.store import AsyncStoreResource
 
         return AsyncStoreResource(self)
 
     @cached_property
     def users(self) -> AsyncUsersResource:
+        """Operations about user"""
         from .resources.users import AsyncUsersResource
 
         return AsyncUsersResource(self)
@@ -419,18 +447,21 @@ class HhWithRawResponse:
 
     @cached_property
     def pets(self) -> pets.PetsResourceWithRawResponse:
+        """Everything about your Pets"""
         from .resources.pets import PetsResourceWithRawResponse
 
         return PetsResourceWithRawResponse(self._client.pets)
 
     @cached_property
     def store(self) -> store.StoreResourceWithRawResponse:
+        """Access to Petstore orders"""
         from .resources.store import StoreResourceWithRawResponse
 
         return StoreResourceWithRawResponse(self._client.store)
 
     @cached_property
     def users(self) -> users.UsersResourceWithRawResponse:
+        """Operations about user"""
         from .resources.users import UsersResourceWithRawResponse
 
         return UsersResourceWithRawResponse(self._client.users)
@@ -444,18 +475,21 @@ class AsyncHhWithRawResponse:
 
     @cached_property
     def pets(self) -> pets.AsyncPetsResourceWithRawResponse:
+        """Everything about your Pets"""
         from .resources.pets import AsyncPetsResourceWithRawResponse
 
         return AsyncPetsResourceWithRawResponse(self._client.pets)
 
     @cached_property
     def store(self) -> store.AsyncStoreResourceWithRawResponse:
+        """Access to Petstore orders"""
         from .resources.store import AsyncStoreResourceWithRawResponse
 
         return AsyncStoreResourceWithRawResponse(self._client.store)
 
     @cached_property
     def users(self) -> users.AsyncUsersResourceWithRawResponse:
+        """Operations about user"""
         from .resources.users import AsyncUsersResourceWithRawResponse
 
         return AsyncUsersResourceWithRawResponse(self._client.users)
@@ -469,18 +503,21 @@ class HhWithStreamedResponse:
 
     @cached_property
     def pets(self) -> pets.PetsResourceWithStreamingResponse:
+        """Everything about your Pets"""
         from .resources.pets import PetsResourceWithStreamingResponse
 
         return PetsResourceWithStreamingResponse(self._client.pets)
 
     @cached_property
     def store(self) -> store.StoreResourceWithStreamingResponse:
+        """Access to Petstore orders"""
         from .resources.store import StoreResourceWithStreamingResponse
 
         return StoreResourceWithStreamingResponse(self._client.store)
 
     @cached_property
     def users(self) -> users.UsersResourceWithStreamingResponse:
+        """Operations about user"""
         from .resources.users import UsersResourceWithStreamingResponse
 
         return UsersResourceWithStreamingResponse(self._client.users)
@@ -494,18 +531,21 @@ class AsyncHhWithStreamedResponse:
 
     @cached_property
     def pets(self) -> pets.AsyncPetsResourceWithStreamingResponse:
+        """Everything about your Pets"""
         from .resources.pets import AsyncPetsResourceWithStreamingResponse
 
         return AsyncPetsResourceWithStreamingResponse(self._client.pets)
 
     @cached_property
     def store(self) -> store.AsyncStoreResourceWithStreamingResponse:
+        """Access to Petstore orders"""
         from .resources.store import AsyncStoreResourceWithStreamingResponse
 
         return AsyncStoreResourceWithStreamingResponse(self._client.store)
 
     @cached_property
     def users(self) -> users.AsyncUsersResourceWithStreamingResponse:
+        """Operations about user"""
         from .resources.users import AsyncUsersResourceWithStreamingResponse
 
         return AsyncUsersResourceWithStreamingResponse(self._client.users)
